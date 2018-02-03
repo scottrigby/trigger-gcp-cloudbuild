@@ -1,0 +1,23 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: trigger-gcp-cloudbuild
+spec:
+  template:
+    metadata:
+      labels:
+        app: trigger-gcp-cloudbuild
+    spec:
+      volumes:
+      - name: google-secrets
+        secret:
+          secretName: google-application-credentials
+      containers:
+      - name: trigger
+        image: docker.io/r6by/trigger-gcp-cloudbuild:latest
+        volumeMounts:
+        - name: google-secrets
+          mountPath: /var/secrets/google
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/google/key.json

@@ -61,6 +61,9 @@ func readFile(file string) []byte {
 // @todo Check Create()'s *ProjectsBuildsCreateCall return value for success.
 func TriggerCloudBuild(projectID string, build *cloudbuild.Build) (*cloudbuild.ProjectsBuildsCreateCall, error) {
 	ctx := context.Background()
+	// @todo Can we avoid passing scopes to DefaultClient() since we define
+	//   GCP service account key via GOOGLE_APPLICATION_CREDENTIALS ENV var, and
+	//   scopes are defined via service accout IAM?
 	client, err := google.DefaultClient(ctx)
 	if err != nil {
 		return nil, err

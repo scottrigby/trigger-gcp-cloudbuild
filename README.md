@@ -46,7 +46,12 @@
 - Deploy the main test app:
 
     ```console
-    $ kubectl create -f deploy.yaml
+    $ helm install trigger-gcp-cloudbuild/ --set projectID=[GCP-PROJECT-ID] --name trigger-gcp-cloudbuild
     ```
-- **To-do:** Allow automatically setting their GCP project ID as an ENV var in the Deployment object. We may want to change this YAML file to a simple Helm chart just for this and other ENV vars needed as we go.
 - Monitor the output with `kubectl logs` (or - shameless plug - try [kpoof](https://github.com/farmotive/kpoof) for fast, prompted k8s logs)
+- Cleanup:
+
+    ```console
+    $ helm delete --purge trigger-gcp-cloudbuild
+    $ kubectl delete secret google-application-credentials
+    ```

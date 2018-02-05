@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 
 	"github.com/ghodss/yaml"
 	"golang.org/x/oauth2/google"
 	cloudbuild "google.golang.org/api/cloudbuild/v1"
+	"google.golang.org/api/googleapi"
 )
 
 func main() {
@@ -74,6 +76,10 @@ func TriggerCloudBuild(projectID string, build *cloudbuild.Build) (*cloudbuild.O
 	}
 
 	operation, err := cloudbuildService.Projects.Builds.Create(projectID, build).Do()
+	// Google API verbose debugging info.
+	if gerr, ok := err.(*googleapi.Error); ok {
+		log.Println(gerr.Body)
+	}
 	if err != nil {
 		return nil, err
 	}

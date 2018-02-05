@@ -41,12 +41,12 @@ func main() {
 	build.Substitutions = map[string]string{"_PROJECT_ID": projectID}
 	fmt.Printf("build: %+v\n", build)
 
-	call, err3 := TriggerCloudBuild(projectID, build)
-	if err3 != nil {
-		fmt.Print(err3)
+	operation, err := TriggerCloudBuild(projectID, build)
+	if err != nil {
+		fmt.Print(err)
 	}
 
-	fmt.Printf("call: %+v\n", call)
+	fmt.Printf("cloudbuild do operation: %+v\n", operation)
 }
 
 func readFile(file string) []byte {
@@ -58,13 +58,12 @@ func readFile(file string) []byte {
 }
 
 // TriggerCloudBuild triggers a GCP Cloudbuild.
-// @todo Check Create()'s *ProjectsBuildsCreateCall return value for success.
-func TriggerCloudBuild(projectID string, build *cloudbuild.Build) (*cloudbuild.ProjectsBuildsCreateCall, error) {
+func TriggerCloudBuild(projectID string, build *cloudbuild.Build) (*cloudbuild.Operation, error) {
 	ctx := context.Background()
-	// @todo Can we avoid passing scopes to DefaultClient() since we define
-	//   GCP service account key via GOOGLE_APPLICATION_CREDENTIALS ENV var, and
-	//   scopes are defined via service accout IAM?
-	client, err := google.DefaultClient(ctx)
+	// Note that even though we define the GCP service account key via
+	// GOOGLE_APPLICATION_CREDENTIALS ENV var, and roles are defined via service
+	// accout IAM, we must define a scope here.
+	client, err := google.DefaultClient(ctx, cloudbuild.CloudPlatformScope)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +73,10 @@ func TriggerCloudBuild(projectID string, build *cloudbuild.Build) (*cloudbuild.P
 		return nil, err
 	}
 
-	call := cloudbuildService.Projects.Builds.Create(projectID, build)
+	operation, err := cloudbuildService.Projects.Builds.Create(projectID, build).Do()
+	if err != nil {
+		return nil, err
+	}
 
-	return call, nil
+	return operation, nil
 }

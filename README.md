@@ -6,7 +6,7 @@
 
 ## Test setup
 
-- Create GCP service account with "Cloud Container Builder" role (check the box "Furnish a new private key" and select key type "JSON".
+- Create GCP service account with "Cloud Container Builder Editor" role (check the box "Furnish a new private key" and select key type "JSON".
 - Note the `[/PATH/TO/SERVICE/ACCOUNT/KEYFILE].json`
 
 ## Local test steps

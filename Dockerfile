@@ -16,5 +16,4 @@ COPY --from=build /tmp/source.tgz .
 # > x509: failed to load system roots and no roots provided
 # ref: https://medium.com/on-docker/use-multi-stage-builds-to-inject-ca-certs-ad1e8f01de1b
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-# @todo Keep the container running on scratch somehow without a shell wait loop.
 CMD ["./main"]

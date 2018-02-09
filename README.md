@@ -26,7 +26,7 @@ Running the [trigger image](https://hub.docker.com/r/r6by/trigger-gcp-cloudbuild
     ```console
     $ helm install trigger-gcp-cloudbuild/ --set projectID=[GCP-PROJECT-ID] --name trigger-gcp-cloudbuild
     ```
-- Monitor the output with `kubectl logs` (or - shameless plug - try [kpoof](https://github.com/farmotive/kpoof) for fast, prompted k8s logs)
+- Monitor the output with `kubectl logs` (or - shameless plug - try [klog](https://github.com/farmotive/klog) for fast, prompted k8s logs)
 - Cleanup:
 
     ```console

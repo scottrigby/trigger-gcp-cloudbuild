@@ -22,7 +22,7 @@ Running the [trigger image](https://hub.docker.com/r/r6by/trigger-gcp-cloudbuild
     ```console
     $ export SA_EMAIL=$(gcloud iam service-accounts list --filter="name:trigger-gcb" --format='value(email)')
     $ export PROJECT=$(gcloud info --format='value(config.project)')
-    $ gcloud projects add-iam-policy-binding $PROJECT --role roles/cloudbuild.builds.editor --member serviceAccount:$SA_EMAIL ---role roles/storage.admin
+    $ gcloud projects add-iam-policy-binding $PROJECT --role roles/cloudbuild.builds.editor --member serviceAccount:$SA_EMAIL --role roles/storage.admin
     ```
 
 1. Create a JSON key for the service-account.

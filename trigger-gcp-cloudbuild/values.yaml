@@ -1,3 +1,6 @@
-# GCP project ID.
-projectID: ""
+## Optionally build and push development versions of the trigger image.
+trigger:
+  image: docker.io/r6by/trigger-gcp-cloudbuild:latest
 
+## Required: GCP project ID.
+projectID: ""

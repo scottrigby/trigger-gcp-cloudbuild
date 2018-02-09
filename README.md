@@ -9,22 +9,40 @@ A hello world for Google Cloudbuild.
 Running the [trigger image](https://hub.docker.com/r/r6by/trigger-gcp-cloudbuild/) asks Google cloudbuild to create and store a second image defined by the included `source` directory. Running the built image should output:
 > Built by GCP Cloudbuild
 
-## Test setup
+## IAM setup
 
-- Create GCP service account with "Cloud Container Builder Editor" and "Storage Object Admin" roles (check the box "Furnish a new private key" and select key type "JSON".
-- Note the `[/PATH/TO/SERVICE/ACCOUNT/KEYFILE].json`
+1. Create a GCP service account:
+
+    ```console
+    $ gcloud iam service-accounts create trigger-gcb
+    ```
+
+1. Add the "Cloud Container Builder Editor" and "Storage Object Admin" roles to the service account.
+
+    ```console
+    $ export SA_EMAIL=$(gcloud iam service-accounts list --filter="name:trigger-gcb" --format='value(email)')
+    $ export PROJECT=$(gcloud info --format='value(config.project)')
+    $ gcloud projects add-iam-policy-binding $PROJECT --role roles/cloudbuild.builds.editor --member serviceAccount:$SA_EMAIL ---role roles/storage.admin
+    ```
+
+1. Create a JSON key for the service-account.
+
+    ```console
+    $ gcloud iam service-accounts keys create trigger-gcb.json --iam-account $SA_EMAIL
+    ```
 
 ## GKE test steps
 
 - Create generic secret for `$GOOGLE_APPLICATION_CREDENTIALS` ENV var:
 
     ```console
-    $ kubectl create secret generic google-application-credentials --from-file=key.json=[/PATH/TO/SERVICE/ACCOUNT/KEYFILE].json
+    $ kubectl create secret generic google-application-credentials --from-file=key.json=trigger-gcb.json
     ```
 - Deploy the main test app:
 
     ```console
-    $ helm install trigger-gcp-cloudbuild/ --set projectID=[GCP-PROJECT-ID] --name trigger-gcp-cloudbuild
+    export PROJECT=$(gcloud info --format='value(config.project)')
+    $ helm install trigger-gcp-cloudbuild/ --set projectID=$PROJECT --name trigger-gcp-cloudbuild
     ```
 - Monitor the output with `kubectl logs` (or - shameless plug - try [klog](https://github.com/farmotive/klog) for fast, prompted k8s logs)
 - Cleanup:

@@ -50,6 +50,11 @@ func main() {
 	fmt.Printf("source url: %s\n", url)
 
 	build := &cloudbuild.Build{
+		// Add build substitution _PROJECT_ID for cloudbuild.yaml.
+		// ref: https://cloud.google.com/container-builder/docs/configuring-builds/substitute-variable-values
+		// > User-defined substitutions must begin with an underscore (_) and
+		// 	 use only uppercase-letters and numbers (respecting the regular
+		//	 expression _[A-Z0-9_]+).
 		Substitutions: map[string]string{"_PROJECT_ID": projectID},
 		Source: &cloudbuild.Source{
 			StorageSource: &cloudbuild.StorageSource{
@@ -59,19 +64,12 @@ func main() {
 	if err2 != nil {
 		fmt.Print(err2)
 	}
-	// Add build substitution _PROJECT_ID for cloudbuild.yaml.
-	// ref: https://cloud.google.com/container-builder/docs/configuring-builds/substitute-variable-values
-	// > User-defined substitutions must begin with an underscore (_) and use
-	// 	 only uppercase-letters and numbers (respecting the regular expression
-	//	 _[A-Z0-9_]+).
-	// build.Substitutions = map[string]string{"_PROJECT_ID": projectID}
 	fmt.Printf("build: %+v\n", build)
 
 	operation, err := TriggerCloudBuild(projectID, build)
 	if err != nil {
 		fmt.Print(err)
 	}
-
 	fmt.Printf("cloudbuild do operation: %+v\n", operation)
 }
 

@@ -1,4 +1,11 @@
+![Hello emoji](https://raw.githubusercontent.com/googlei18n/noto-emoji/master/png/128/emoji_u1f44b.png)
+![World emoji](https://raw.githubusercontent.com/googlei18n/noto-emoji/master/png/128/emoji_u1f30d.png)
+![Cloud emoji](https://raw.githubusercontent.com/googlei18n/noto-emoji/master/png/128/emoji_u2601.png)
+![Build emoji](https://raw.githubusercontent.com/googlei18n/noto-emoji/master/png/128/emoji_u1f3d7.png)
+
 # Trigger GCP Cloudbuild
+
+A hello world for Google Cloudbuild.
 
 ## References
 

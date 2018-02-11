@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 
 	"cloud.google.com/go/storage"
@@ -36,10 +37,16 @@ func main() {
 	fmt.Println(string(j))
 
 	projectID := os.Getenv("PROJECT_ID")
-	storageBucketName := projectID + "_cloudbuild"
+	storageBucketName := projectID + "_trigger-gcp-cloudbuild"
 	storageBucket, err := getStorageBucket(storageBucketName)
 	if err != nil {
 		fmt.Printf("err: %v\n", err)
+		return
+	}
+
+	sberr := createStorageBucket(storageBucket, projectID, &storage.BucketAttrs{})
+	if sberr != nil {
+		fmt.Printf("could not create storage bucket: %v\n", sberr)
 		return
 	}
 	url, err := copySourceToStorage(storageBucket, storageBucketName)
@@ -79,6 +86,24 @@ func readFile(file string) []byte {
 		fmt.Print(err)
 	}
 	return b
+}
+
+func createStorageBucket(bucket *storage.BucketHandle, name string, attrs *storage.BucketAttrs) error {
+	ctx := context.Background()
+	err := bucket.Create(ctx, name, attrs)
+
+	// If the bucket exists, return without error, but give a friendly message.
+	// > Error 409: You already own this bucket. Please select another name., conflict
+	if e, ok := err.(*googleapi.Error); ok && e.Code == http.StatusConflict {
+		fmt.Println("storage bucket already exists")
+		return nil
+	}
+
+	// If any other error return it.
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func getStorageBucket(name string) (*storage.BucketHandle, error) {

@@ -53,6 +53,26 @@ Running the [trigger image](https://hub.docker.com/r/r6by/trigger-gcp-cloudbuild
     $ kubectl delete secret google-application-credentials
     ```
 
+# IAM, Storage and Images cleanup
+
+- Delete the service account:
+
+    ```console
+    $ gcloud iam service-accounts delete $SA_EMAIL
+    ```
+- Remove the storage source file, then bucket:
+
+    ```console
+    $ gsutil rm gs://${PROJECT}_trigger-gcp-cloudbuild/source.tgz
+    $ gsutil rb gs://${PROJECT}_trigger-gcp-cloudbuild
+    ```
+
+- Remove the built images:
+
+    ```console
+    $ gcloud container images list-tags gcr.io/${PROJECT}/built-by-gcp-cloudbuild --format='get(digest)' | while read -r d; do command gcloud container images delete gcr.io/${PROJECT}/built-by-gcp-cloudbuild@"$d" --force-delete-tags --quiet; done
+    ```
+
 ## Local test steps
 
 - Run the built test image:

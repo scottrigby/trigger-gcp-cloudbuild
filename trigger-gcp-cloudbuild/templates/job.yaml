@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "trigger-gcp-cloudbuild.fullname" . }}-trigger
+  name: {{ .Release.Name }}-trigger
   labels:
     app: {{ template "trigger-gcp-cloudbuild.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
@@ -21,7 +21,7 @@ spec:
         secret:
           secretName: google-application-credentials
       containers:
-      - name: {{ template "trigger-gcp-cloudbuild.fullname" . }}-trigger
+      - name: trigger
         image: {{ .Values.trigger.image }}
         volumeMounts:
         - name: google-secrets
@@ -35,7 +35,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "trigger-gcp-cloudbuild.fullname" . }}-built
+  name: {{ .Release.Name }}-built
   labels:
     app: {{ template "trigger-gcp-cloudbuild.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
@@ -48,6 +48,6 @@ spec:
     spec:
       restartPolicy: Never
       containers:
-      - name: {{ template "trigger-gcp-cloudbuild.fullname" . }}-built
+      - name: built
         image: {{ printf "gcr.io/%s/built-by-gcp-cloudbuild" .Values.projectID }}
 {{- end }}

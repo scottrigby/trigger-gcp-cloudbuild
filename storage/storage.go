@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 
-	"cloud.google.com/go/storage"
+	st "cloud.google.com/go/storage"
 	"github.com/mholt/archiver"
 	"google.golang.org/api/googleapi"
 )
@@ -32,7 +32,7 @@ func MakeTarball(dir string, fileName string) error {
 }
 
 // CreateBucket creates a storage bucket.
-func CreateBucket(bucket *storage.BucketHandle, name string, attrs *storage.BucketAttrs) error {
+func CreateBucket(bucket *st.BucketHandle, name string, attrs *st.BucketAttrs) error {
 	ctx := context.Background()
 	err := bucket.Create(ctx, name, attrs)
 
@@ -51,9 +51,9 @@ func CreateBucket(bucket *storage.BucketHandle, name string, attrs *storage.Buck
 }
 
 // GetBucketHandle gets a storage bucket handle.
-func GetBucketHandle(name string) (*storage.BucketHandle, error) {
+func GetBucketHandle(name string) (*st.BucketHandle, error) {
 	ctx := context.Background()
-	client, err := storage.NewClient(ctx)
+	client, err := st.NewClient(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -62,10 +62,10 @@ func GetBucketHandle(name string) (*storage.BucketHandle, error) {
 
 // WriteToStorage writes a file to storage.
 // ref: https://github.com/GoogleCloudPlatform/golang-samples/blob/master/getting-started/bookshelf/app/app.go#L218
-func WriteToStorage(storageBucket *storage.BucketHandle, bucketName string, file string) (string, error) {
+func WriteToStorage(storageBucket *st.BucketHandle, bucketName string, file string) (string, error) {
 	ctx := context.Background()
 	w := storageBucket.Object(file).NewWriter(ctx)
-	w.ACL = []storage.ACLRule{{Entity: storage.AllUsers, Role: storage.RoleReader}}
+	w.ACL = []st.ACLRule{{Entity: st.AllUsers, Role: st.RoleReader}}
 	w.ContentType = "application/gzip"
 	w.CacheControl = "public, max-age=86400"
 

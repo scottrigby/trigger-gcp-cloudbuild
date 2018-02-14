@@ -5,11 +5,10 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/scottrigby/trigger-gcp-cloudbuild/cloudbuild"
-	"github.com/scottrigby/trigger-gcp-cloudbuild/storage"
-
 	st "cloud.google.com/go/storage"
 	"github.com/ghodss/yaml"
+	"github.com/scottrigby/trigger-gcp-cloudbuild/cloudbuild"
+	"github.com/scottrigby/trigger-gcp-cloudbuild/storage"
 )
 
 const (

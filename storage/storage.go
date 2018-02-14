@@ -4,12 +4,32 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 
 	"cloud.google.com/go/storage"
+	"github.com/mholt/archiver"
 	"google.golang.org/api/googleapi"
 )
+
+// MakeTarball makes a context directory tarball.
+func MakeTarball(dir string, fileName string) error {
+	files, err := ioutil.ReadDir(dir)
+	if err != nil {
+		return err
+	}
+	// Convert to []string for archiver.TarGz.Make().
+	filePaths := make([]string, len(files))
+	for i, file := range files {
+		filePaths[i] = dir + "/" + file.Name()
+	}
+	err2 := archiver.TarGz.Make(fileName, filePaths)
+	if err2 != nil {
+		return err2
+	}
+	return nil
+}
 
 // CreateBucket creates a storage bucket.
 func CreateBucket(bucket *storage.BucketHandle, name string, attrs *storage.BucketAttrs) error {

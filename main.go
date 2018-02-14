@@ -44,6 +44,12 @@ func main() {
 		return
 	}
 
+	tgzerr := storage.MakeTarball("source", storageFileName)
+	if tgzerr != nil {
+		fmt.Printf("could not compress source tarball: %v\n", tgzerr)
+		return
+	}
+
 	url, err := storage.WriteToStorage(bucketHandle, bucketName, storageFileName)
 	if err != nil {
 		fmt.Printf("could not copy source to storage: %v\n", err)
@@ -65,4 +71,7 @@ func main() {
 		return
 	}
 	fmt.Printf("cloudbuild operation: %s\n", operation)
+
+	// Tidy up.
+	os.Remove(storageFileName)
 }

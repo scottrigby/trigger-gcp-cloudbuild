@@ -1,5 +1,5 @@
 FROM golang:alpine as build
-WORKDIR /go/src/github.com/scottrigby/trigger-cgp-cloudbuild
+WORKDIR /go/src/github.com/scottrigby/trigger-gcp-cloudbuild
 ADD . .
 RUN apk --no-cache add git ca-certificates && \
     go get -u github.com/golang/dep/... && \
